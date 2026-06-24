@@ -3,7 +3,7 @@
 A full-stack web application built for a real Melbourne renovation business.
 
 ## Live Site
-🌐 [wlbuildingsolutions.com](http://wlbuildingsolutions.com)
+🌐 [wlbuildingsolutions.com](https://www.wlbuildingsolutions.com/)
 
 ## What I Built
 - 4-page professional website (Home, Services, Gallery, Contact)
