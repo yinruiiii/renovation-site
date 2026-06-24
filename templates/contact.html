@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact · WL Building Solutions</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; color: #333; }
+
+        nav {
+            background: #1a1a1a;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        nav .logo { color: #fff; font-size: 22px; font-weight: bold; }
+        nav ul { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
+        nav ul a { color: #ccc; text-decoration: none; font-size: 15px; }
+        nav ul a:hover { color: #fff; }
+
+        .page-hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                        url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400') center/cover;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+        }
+        .page-hero h1 { font-size: 42px; margin-bottom: 10px; }
+        .page-hero p { font-size: 18px; color: #ddd; }
+
+        .contact-section {
+            padding: 80px 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-info h2 { font-size: 30px; margin-bottom: 20px; }
+        .contact-info p { color: #666; font-size: 16px; line-height: 1.8; margin-bottom: 30px; }
+        .info-item { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+        .info-item .icon { font-size: 24px; }
+        .info-item p { margin: 0; color: #444; font-size: 15px; }
+
+        .contact-form h2 { font-size: 30px; margin-bottom: 24px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; color: #555; }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+        }
+        .form-group textarea { height: 120px; resize: vertical; }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #e67e22;
+        }
+        .submit-btn {
+            background: #e67e22;
+            color: #fff;
+            padding: 14px 36px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .submit-btn:hover { background: #cf6d17; }
+
+        .chat-bubble {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #e67e22;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 28px;
+        }
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 360px;
+            height: 500px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .chat-window.open { display: flex; }
+        .chat-header {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-header h3 { font-size: 15px; }
+        .chat-header span { cursor: pointer; font-size: 20px; }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .msg {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .msg.bot {
+            background: #f1f1f1;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .msg.user {
+            background: #e67e22;
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #eee;
+            padding: 12px;
+            gap: 8px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+        .chat-input input:focus { border-color: #e67e22; }
+        .chat-input button {
+            background: #e67e22;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .typing {
+            background: #f1f1f1;
+            color: #999;
+            align-self: flex-start;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            display: none;
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: #aaa;
+            text-align: center;
+            padding: 30px;
+            font-size: 14px;
+        }
+
+        /* ---- MOBILE ---- */
+        @media (max-width: 768px) {
+            nav { padding: 16px 20px; }
+            nav ul { gap: 14px; }
+            .page-hero h1 { font-size: 28px; }
+            .page-hero p { font-size: 15px; }
+            .contact-section {
+                grid-template-columns: 1fr;
+                padding: 50px 20px;
+                gap: 40px;
+            }
+            .contact-info h2,
+            .contact-form h2 { font-size: 24px; }
+            .chat-window {
+                right: 10px;
+                left: 10px;
+                width: auto;
+                bottom: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">WL Building Solutions</div>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/gallery">Gallery</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Contact Us</h1>
+        <p>Get in touch for a free quote or consultation</p>
+    </div>
+
+    <div class="contact-section">
+
+        <!-- Left: Contact Info -->
+        <div class="contact-info">
+            <h2>Get In Touch</h2>
+            <p>Whether you have a small repair or a full renovation in mind, we'd love to hear from you. Our team is based in Melbourne and services all surrounding suburbs.</p>
+            <div class="info-item">
+                <div class="icon">📞</div>
+                <p>(+61) 422 335 986</p>
+            </div>
+            <div class="info-item">
+                <div class="icon">📧</div>
+                <p>willbuildingsolution@gmail.com</p>
+            </div>
+            <div class="info-item">
+                <div class="icon">📍</div>
+                <p>Melbourne, VIC — servicing all suburbs</p>
+            </div>
+            <div class="info-item">
+                <div class="icon">🕐</div>
+                <p>Mon–Fri: 7am–6pm · Sat: 8am–2pm</p>
+            </div>
+        </div>
+
+        <!-- Right: Contact Form -->
+        <div class="contact-form">
+            <h2>Send Us a Message</h2>
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="fname" placeholder="John Smith">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="fphone" placeholder="(+61) 422 335 986">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="femail" placeholder="john@email.com">
+            </div>
+            <div class="form-group">
+                <label>Type of Project</label>
+                <select id="fproject">
+                    <option>Kitchen Renovation</option>
+                    <option>Bathroom Renovation</option>
+                    <option>Home Extension</option>
+                    <option>Commercial Fitout</option>
+                    <option>Decking & Pergola</option>
+                    <option>General Carpentry</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tell Us About Your Project</label>
+                <textarea id="fmessage" placeholder="Describe your project, location, and budget if known..."></textarea>
+            </div>
+            <button class="submit-btn" onclick="submitForm()">Send Message</button>
+            <p id="form-msg" style="margin-top:14px; color:green; font-size:15px; display:none;">
+                ✅ Message sent! We'll be in touch soon.
+            </p>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2025 WL Building Solutions · Melbourne, VIC · All rights reserved</p>
+    </footer>
+
+    <div class="chat-bubble" onclick="toggleChat()">💬</div>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <h3>💬 WL Building Solutions</h3>
+            <span onclick="toggleChat()">✕</span>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="msg bot">Hi! 👋 I'm the WL Building Solutions assistant. I can answer questions about our services or help you get a free quote. What can I help you with today?</div>
+        </div>
+        <div class="typing" id="typing">Assistant is typing...</div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleKey(event)">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const win = document.getElementById('chatWindow');
+            win.classList.toggle('open');
+        }
+        function handleKey(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messages = document.getElementById('chatMessages');
+            const typing = document.getElementById('typing');
+            const text = input.value.trim();
+            if (!text) return;
+            messages.innerHTML += `<div class="msg user">${text}</div>`;
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+            typing.style.display = 'block';
+            messages.scrollTop = messages.scrollHeight;
+            const res = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            const data = await res.json();
+            typing.style.display = 'none';
+            messages.innerHTML += `<div class="msg bot">${data.reply}</div>`;
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        async function submitForm() {
+            const data = {
+                name: document.getElementById('fname').value,
+                phone: document.getElementById('fphone').value,
+                email: document.getElementById('femail').value,
+                project_type: document.getElementById('fproject').value,
+                message: document.getElementById('fmessage').value
+            };
+
+            if (!data.name || !data.phone) {
+                alert('Please enter at least your name and phone number.');
+                return;
+            }
+
+            await fetch('/submit-contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            document.getElementById('form-msg').style.display = 'block';
+            document.getElementById('fname').value = '';
+            document.getElementById('fphone').value = '';
+            document.getElementById('femail').value = '';
+            document.getElementById('fmessage').value = '';
+        }
+    </script>
+
+</body>
+</html>
